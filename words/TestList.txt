@@ -1,0 +1,10 @@
+shape
+circle
+round
+square
+boxed
+fruit
+grape
+sweet
+berry
+citrus
