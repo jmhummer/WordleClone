@@ -6,6 +6,9 @@
  *                              white for not in word)
  *
  * @author Nick Sanford
+ * @author Nick Schauer
+ * @author Joe Hummer
+ * @author Ben Morris
  */
 public class Board {
     
