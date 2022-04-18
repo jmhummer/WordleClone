@@ -33,7 +33,7 @@ public class Board {
      * @param numTotalGuesses the number of guesses allowed on each player's turn (typically 6)
      * @throws IllegalArgumentException if the word length or number of guesses is < 1
      */
-    public Board(int wordLength, int numTotalGuesses) {
+    public Board(int numTotalGuesses, int wordLength) {
         // Check for invalid arguments
         if (wordLength <= 0) {
             throw new IllegalArgumentException("Word length must be greater than 0");
@@ -70,8 +70,17 @@ public class Board {
                                                " already been made");
         }
         
-        letters[currentGuesses] = guessLetters;
+        // Copy char values into letters array
+        for (int i = 0; i < guessLetters.length; i++) {
+            letters[currentGuesses][i] = guessLetters[i];
+        }
+        
+        // Copy String values into colors array
         colors[currentGuesses] = guessColors;
+        for (int i = 0; i < guessColors.length; i++) {
+            colors[currentGuesses][i] = guessColors[i];
+        }
+        
         currentGuesses++;
     }
     
