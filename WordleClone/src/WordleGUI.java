@@ -65,7 +65,7 @@ public class WordleGUI extends JFrame// implements ActionListener
         setTitle("Wordle Clone");      
         
         wg.newGame();
-        this.message = "Press ENTER to continue."
+        this.message = "Press ENTER to continue.";
         updateGUI(player);
     }
 
@@ -78,9 +78,9 @@ public class WordleGUI extends JFrame// implements ActionListener
 
         String name = player[0].getName();
         if(name == null)
-            name = "Player 1"
+            name = "Player 1";
         int score = player[0].getScore();
-        playerOneLabel = new JLabel(name + ": " + score + " points"); //+ pm.getPoints());
+        playerOneLabel = new JLabel(name + ": " + score + " points");
         playerOneLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
         playerOneLabel.setHorizontalAlignment(JLabel.CENTER);
         playerOneLabel.setOpaque(true);
@@ -91,7 +91,7 @@ public class WordleGUI extends JFrame// implements ActionListener
 
         name = player[1].getName();
         if(name == null)
-            name = "Player 2"
+            name = "Player 2";
         score = player[1].getScore();
         playerTwoLabel = new JLabel(name + ": " + score + " points");
         playerTwoLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
@@ -147,17 +147,17 @@ public class WordleGUI extends JFrame// implements ActionListener
             
             for(int letter = 0; letter < NUM_OF_LETTERS; letter++) {                
                 
-                //char guessArray[] = board.getGuessLetters(guess);
-                //char guessLetter = guessArray[letter]
-                String guessLetter = "A";            
+                char guessArray[] = board.getGuessLetters(guess);
+                String guessLetter = "" + guessArray[letter];
+                //String guessLetter = "A";            
                 letterLabel = new JLabel(guessLetter);
                 letterLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
                 letterLabel.setHorizontalAlignment(JLabel.CENTER);
                 letterLabel.setOpaque(true);
                 
-                //String colorOfLetters[] = board.getGuessColors[guess]
-                //String color = colorOfLetters[letter];
-                //Add a switch stament for the color if using 'color' doesn't work.
+                String colorOfLetters[] = board.getGuessColors[guess];
+                String color = colorOfLetters[letter];
+                //Add a switch statement for the color if using 'color' doesn't work.
                 letterLabel.setBackground(Color.BLACK);
                 letterLabel.setForeground(Color.WHITE);
                 border = BorderFactory.createLineBorder(Color.DARK_GRAY, BORDER_WIDTH);
@@ -270,7 +270,7 @@ public class WordleGUI extends JFrame// implements ActionListener
                 System.out.println("Usage: java -cp bin WordleGUI <testFlag>");
             }
         } else if (args.length == 0) {
-            new WordleGUI(0)); //Wordle treat -1 as testing and everything else as normal. 
+            new WordleGUI(0)); //Wordle treats -1 as testing and everything else as normal. 
         } else {
             System.out.println("Usage: java -cp bin WordleGUI <testFlag>");
         }
