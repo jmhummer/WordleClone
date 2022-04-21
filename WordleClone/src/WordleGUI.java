@@ -11,6 +11,8 @@ import javax.swing.border.Border;
 public class WordleGUI extends JFrame// implements ActionListener 
 {
     private String message = "";
+    
+    private Board thisBoard;
 
     /** x coordinate of upper lefthand corner of GUI */
     public static final int X = 50;
@@ -43,7 +45,6 @@ public class WordleGUI extends JFrame// implements ActionListener
      * the deck will be shuffled the same way, whenever the seed is the same.
      */
     public WordleGUI() {
-
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int width = 400;
 		int height = 600;
@@ -96,6 +97,7 @@ public class WordleGUI extends JFrame// implements ActionListener
         panelOne.add(playerOneLabel);
         panelOne.add(playerTwoLabel);
 
+        //declare WordleGame (to get rounds)
         String round = "round # of 5";
         roundLabel = new JLabel(round);
         roundLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
@@ -106,6 +108,7 @@ public class WordleGUI extends JFrame// implements ActionListener
         border = BorderFactory.createLineBorder(Color.BLACK, BORDER_WIDTH);
         roundLabel.setBorder(border);
 
+        //message is returned from .next()
         messageLabel = new JLabel(message);
         messageLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
         messageLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -152,7 +155,7 @@ public class WordleGUI extends JFrame// implements ActionListener
         blankLabel.setBackground(Color.darkGray);
         blankLabel.setForeground(Color.white);
         border = BorderFactory.createLineBorder(Color.BLACK, BORDER_WIDTH);
-        messageLabel.setBorder(border);
+        blankLabel.setBorder(border);
 
         guessTextField = new JTextField(5);
         guessTextField.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
