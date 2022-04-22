@@ -4,6 +4,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.time.chrono.ThaiBuddhistChronology;
+import java.util.Random;
 import java.util.Scanner;
 import javax.swing.border.Border;
 
@@ -14,11 +16,12 @@ import javax.swing.border.Border;
  * @author Nick Sanford
  * @author Ben Morris
  */
-public class WordleGUI extends JFrame// implements ActionListener 
+public class WordleGUI extends JFrame implements ActionListener 
 {
     //private String message = ""; Don't need this to be a field. Made it a local variable.
 
     private WordleGame wg;
+    private Player[] player;
 
     String message;
 
@@ -54,7 +57,7 @@ public class WordleGUI extends JFrame// implements ActionListener
      */
     public WordleGUI(int testFlag) {
         
-        wg = new WordleGame(int testFlag);
+        wg = new WordleGame(testFlag);
         
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int width = 400;
@@ -62,24 +65,33 @@ public class WordleGUI extends JFrame// implements ActionListener
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(width, height);
         setLocation(X, Y);
-        setTitle("Wordle Clone");      
-        
+        setTitle("Wordle Clone");
+
+        player = new Player[2];
+        player[0] = new Player();
+        player[1] = new Player();
+        //player = wg.getPlayer();        
+
         wg.newGame();
+        player[1].addName("Julia");
+        //System.out.println(wg.getName(1));
+
         this.message = "Press ENTER to continue.";
         updateGUI(player);
     }
 
     private void updateGUI(Player[] player) {
         
-        Container c = getContentPane();
-
-        Player[] player = new Player[2];
-        player = wg.getPlayer(); //TODO Add this to WordleGame.java  
-
+        Container c = getContentPane();  
+        Player[] player2 = new Player[2];
+        player2 = wg.getPlayer();
         String name = player[0].getName();
+        //String name = wg.getName(0);
+        //String name = "Ben";
         if(name == null)
             name = "Player 1";
-        int score = player[0].getScore();
+        //int score = player[0].getScore();
+        int score = -1;
         playerOneLabel = new JLabel(name + ": " + score + " points");
         playerOneLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
         playerOneLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -92,7 +104,7 @@ public class WordleGUI extends JFrame// implements ActionListener
         name = player[1].getName();
         if(name == null)
             name = "Player 2";
-        score = player[1].getScore();
+        //score = player[1].getScore();
         playerTwoLabel = new JLabel(name + ": " + score + " points");
         playerTwoLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
         playerTwoLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -107,8 +119,8 @@ public class WordleGUI extends JFrame// implements ActionListener
         panelOne.add(playerOneLabel);
         panelOne.add(playerTwoLabel);
 
-        int roundNum = wg.getCurrentRound(); //TODO: Add this in WordleGame.java
-        String round = "round # of 5";
+        int roundNum = wg.getCurrentRound();
+        String round = "round " + roundNum + " of 5";
         roundLabel = new JLabel(round);
         roundLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
         roundLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -138,7 +150,7 @@ public class WordleGUI extends JFrame// implements ActionListener
         mainPanel.add(panelOne);
         mainPanel.add(panelTwo);
 
-        Board board = wg.getBoard(); //TODO: add this to WordleGame
+        Board board = wg.getCurrentBoard(); //TODO: add this to WordleGame
         
         for(int guess = 0; guess < NUM_OF_GUESSES; guess++) {           
             
@@ -148,14 +160,14 @@ public class WordleGUI extends JFrame// implements ActionListener
             for(int letter = 0; letter < NUM_OF_LETTERS; letter++) {                
                 
                 char guessArray[] = board.getGuessLetters(guess);
-                String guessLetter = "" + guessArray[letter];
+                String guessLetter = "b" + guessArray[letter];
                 //String guessLetter = "A";            
                 letterLabel = new JLabel(guessLetter);
                 letterLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
                 letterLabel.setHorizontalAlignment(JLabel.CENTER);
                 letterLabel.setOpaque(true);
                 
-                String colorOfLetters[] = board.getGuessColors[guess];
+                String colorOfLetters[] = board.getGuessColors(guess);
                 String color = colorOfLetters[letter];
                 //Add a switch statement for the color if using 'color' doesn't work.
                 letterLabel.setBackground(Color.BLACK);
@@ -169,12 +181,12 @@ public class WordleGUI extends JFrame// implements ActionListener
         }
         
         String labelText;
-        if(round == 0)
+        if(wg.getCurrentRound() == 0)
             labelText = "Enter your name:  ";
         else
             labelText = "Enter your guess:  ";
         
-        blankLabel = new JLabel(labelText));
+        blankLabel = new JLabel(labelText);
         blankLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
         blankLabel.setHorizontalAlignment(JLabel.RIGHT);
         blankLabel.setOpaque(true);
@@ -184,7 +196,7 @@ public class WordleGUI extends JFrame// implements ActionListener
         blankLabel.setBorder(border);
 
         guessTextField = new JTextField(5);
-        if(round == 0)
+        if(wg.getCurrentRound() == 0)
             guessTextField.setText("Place Input Here");
         else
             guessTextField.setText("");
@@ -225,6 +237,10 @@ public class WordleGUI extends JFrame// implements ActionListener
 
         quitButton.addActionListener(this);
         enterButton.addActionListener(this);
+
+        Random rnd = new Random();
+        System.out.println(rnd.nextInt(10));
+        System.out.println("here again");
     }
 
     
@@ -247,12 +263,18 @@ public class WordleGUI extends JFrame// implements ActionListener
             lblRound.setText("Round " + wg.getCurrentRound() + " of " & wg.ROUNDS);
             lblMessage.setText(message); // update message
         */
-
-        if(e.getSource() == btnEnter) {
-            this.message = next(input, message);
-            updateGUI(player);
+        
+        if(e.getSource() == enterButton) {
+            this.message = wg.next(input, message);
             
-        } else if (e.getSource() == btnQuit) { // exit game
+            Player[] player = new Player[2];
+            player[0] = new Player();
+            player[1] = new Player();
+            //player = wg.getPlayer();
+            player[0].addName("Tyler");
+            player[0].getName();
+            updateGUI(player);
+        } else if (e.getSource() == quitButton) { // exit game
             System.exit(1);
         }
     }
@@ -270,7 +292,7 @@ public class WordleGUI extends JFrame// implements ActionListener
                 System.out.println("Usage: java -cp bin WordleGUI <testFlag>");
             }
         } else if (args.length == 0) {
-            new WordleGUI(0)); //Wordle treats -1 as testing and everything else as normal. 
+            new WordleGUI(0); //Wordle treats -1 as testing and everything else as normal. 
         } else {
             System.out.println("Usage: java -cp bin WordleGUI <testFlag>");
         }
