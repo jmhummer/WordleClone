@@ -53,10 +53,40 @@ public class Wordle {
     }
     
     /**
-     * Randomly assigns a target word for a Wordle game
+     * Randomly assigns a target word for a Wordle game.
+     * If game is in test mode, pull sequentially from the test words array.
      */
     public void newAnswer() {
-        //TODO randomly pull from WordleList or NOT randomly pull from TestList and assign as wordle
+        int oldAnswerIndex;
+        int newAnswerIndex;
+        //If test mode is active, find the previous word in the test array 
+        //and pull the next word in line
+        if (test == -1 && wordleList.length == 10) {
+            if (wordle == null) {
+                wordle = wordleList[0];
+            }
+            else {
+                for(int i = 0; i < wordleList.length; i++) {
+                    if (wordleList[i].equals(wordle)) {
+                        oldAnswerIndex = i;
+                        wordle = wordleList[oldAnswerIndex + 1];
+                    }
+                }
+            }
+        }
+        //If not in test mode, randomly pull from the array of guesses, assign new answer,
+        //and replace with null value. If null value is pulled, pull the next word in line.
+        else {
+            Random r = new Random();
+            newAnswerIndex = r.nextInt(wordleList.length);
+            if (wordleList[newAnswerIndex] == null) {
+                while (wordleList[newAnswerIndex] == null) {
+                    newAnswerIndex++;
+                }
+            }
+            wordle = wordleList[newAnswerIndex];
+            wordleList[newAnswerIndex] = null;
+        }
     }
     
     /**
@@ -88,20 +118,31 @@ public class Wordle {
     
     /**
      * Searches array of possible words and indicates if a guess is a word
+     * @param guess The input value to compare to the list of possible words
      * @return true if input is a word, false if it is not
      */
-    public boolean isWord() {
-        //TODO determine if input is a word by searching GuessList
-        return true;
+    public boolean isWord(String guess) {
+        boolean isWord = false;
+        for (int i = 0; i < guessList.length; i++) {
+            if (guessList[i].equalsIgnoreCase(guess)) {
+                isWord = true;
+            }
+        }
+        return isWord;
     }
     
     /**
      * Determines if the input word is the target word
+     * @param guess The input value to compare to the answer
      * @return true if input word is the target word, false otherwise
      */
-    public boolean isAnswer() {
-        //TODO determine if input is the target word
-        return true;
+    public boolean isAnswer(String guess) {
+        if (guess.equalsIgnoreCase(wordle)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     
     /**
@@ -180,5 +221,6 @@ public class Wordle {
         }
         input.close();
     }
+ 
     
 }
