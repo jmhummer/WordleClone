@@ -12,6 +12,12 @@
  */
 public class Board {
     
+    /** The number of letters in the alphabet */
+    public static final int NUM_LETTERS_IN_ALPHABET = 26;
+    
+    /** The ASCII value of 'A' */
+    public static final int CAPITAL_A_ASCII_VALUE = 65;
+    
     /** 2D array of letters guessed so far
      *  Each row represents a word, each column represents a letter within that word
      */
@@ -19,6 +25,7 @@ public class Board {
     
     /** 2D array of colors corresponding to letters guessed so far
      *  Each row represents a word, each column represents a color within that word
+     *  Black incorrect, blue wrong pos but is in word, orange correct position
      */
     private String[][] colors;
     
@@ -27,13 +34,26 @@ public class Board {
      */
     private int currentGuesses;
     
+    /** The color of a correctly placed letter: orange */
+    private String correctPositionColor;
+    
+    /** The color of an incorrectly placed letter that exists in the word: blue */
+    private String incorrectPositionColor;
+    
+    /** The color of a letter that is not in the word/default color: black */
+    private String notInWordColor;
+    
+    /** The word that the user is trying to guess (the "wordle") */
+    private char[] targetWordArray;
+    
     /**
      * Constructor method for a Board object
      * @param wordLength the number of letters in the guessed words (typically 5)
      * @param numTotalGuesses the number of guesses allowed on each player's turn (typically 6)
-     * @throws IllegalArgumentException if the word length or number of guesses is < 1
+     * @throws IllegalArgumentException if the word length or number of guesses is < 1 or
+     *                                  if the targetWord has a different length
      */
-    public Board(int numTotalGuesses, int wordLength) {
+    public Board(int numTotalGuesses, int wordLength, String targetWord) {
         // Check for invalid arguments
         if (wordLength <= 0) {
             throw new IllegalArgumentException("Word length must be greater than 0");
@@ -41,10 +61,30 @@ public class Board {
         if (numTotalGuesses <= 0) {
             throw new IllegalArgumentException("Number of guesses must be greater than 0");
         }
+        if (targetWord.length() != wordLength) {
+            throw new IllegalArgumentException("Target word must be the same as the word length");
+        }
         
         // Initialize 2D arrays to represent the letters and colors of the guesses
         letters = new char[numTotalGuesses][wordLength];
         colors = new String[numTotalGuesses][wordLength];
+        
+        correctPositionColor = "orange";
+        incorrectPositionColor = "blue";
+        notInWordColor = "black";
+        
+        // Initialize each colors element to "black"
+        for (int i = 0; i < colors.length; i++) {
+            for (int j = 0; j < colors[i].length; j++) {
+                colors[i][j] = notInWordColor;
+            }
+        }
+        
+        // Convert the target word into a char array for ease of comparison
+        targetWordArray = new char[wordLength];
+        for (int i = 0; i < wordLength; i++) {
+            targetWordArray[i] = Character.toUpperCase(targetWord.charAt(i));
+        }
         
         currentGuesses = 0;
     }
@@ -53,16 +93,20 @@ public class Board {
      * Adds an array of a word to the 2D letters array and
      * adds an array of colors to the 2D colors array
      *
-     * @param guessLetters the letters to be displayed the word
-     * @param guessColors the colors to be displayed for each letter in the word
+     * @param guessWord the word that was guessed by the user
      * @throws IllegalArgumentException if the parameter arrays are not the same length as the
      *                                  rows in the private field arrays or
      *                                  if there is no more room in the private field arrays
      */
-    public void addGuess(char[] guessLetters, String[] guessColors) {
+     // TODO review program logic
+     // TODO update javadoc
+     // TODO update CE report document
+     // TODO write unit tests
+    public void addGuess(String guessWord) {
+        int lettersPerWord = letters[0].length;
         // Check to make sure that there won't be any array indexing issues
-        if (guessLetters.length != letters[0].length || guessColors.length != colors[0].length) {
-            throw new IllegalArgumentException("There must be " + letters[0].length + 
+        if (guessWord.length() != lettersPerWord) {
+            throw new IllegalArgumentException("There must be " + lettersPerWord + 
                                                " letters in the guessed word");
         }
         if (currentGuesses > letters.length) {
@@ -70,17 +114,34 @@ public class Board {
                                                " already been made");
         }
         
-        // Copy char values into letters array
-        for (int i = 0; i < guessLetters.length; i++) {
-            letters[currentGuesses][i] = guessLetters[i];
+        // Add each letter of the guessed word to the letters array
+        for (int i = 0; i < lettersPerWord; i++) {
+            letters[currentGuesses][i] = Character.toUpperCase(guessWord.charAt(i));
         }
         
-        // Copy String values into colors array
-        colors[currentGuesses] = guessColors;
-        for (int i = 0; i < guessColors.length; i++) {
-            colors[currentGuesses][i] = guessColors[i];
+        // Holds the number of occurances of each letter in the target word
+        // Based on alphabetical indexing: index 0 is A's, index 25 is Z's
+        // Decremented whenver the letter is encountered in the guessed word
+        int[] numOfEachLetter = new int[NUM_LETTERS_IN_ALPHABET];
+        for (int i = 0; i < lettersPerWord; i++) {
+            numOfEachLetter[targetWordArray[i] - CAPITAL_A_ASCII_VALUE]++;
+        }
+        // Compare guessed word letters to target word letters
+        for (int i = 0; i < lettersPerWord; i++) {
+            // Check if the letters match
+            if (letters[currentGuesses][i] == targetWordArray[i]) {
+                colors[currentGuesses][i] = correctPositionColor;
+                // Decrement the number of that letter remaining in the word
+                numOfEachLetter[targetWordArray[i] - CAPITAL_A_ASCII_VALUE]--;
+            }
+            // Check if the letter exists in the targetWord elsewhere
+            else if (numOfEachLetter[letters[currentGuesses][i] - CAPITAL_A_ASCII_VALUE] > 0) {
+                colors[currentGuesses][i] = incorrectPositionColor;
+                numOfEachLetter[letters[currentGuesses][i] - CAPITAL_A_ASCII_VALUE]--;
+            }
         }
         
+        // Increment currentGuesses to prepare for the next guess to be added
         currentGuesses++;
     }
     
