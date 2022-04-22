@@ -1,3 +1,4 @@
+package Backup;
 // javac -d bin -cp bin src/WordleGUI.java
 // java -cp bin WordleGUI
 
@@ -8,6 +9,10 @@ import java.time.chrono.ThaiBuddhistChronology;
 import java.util.Random;
 import java.util.Scanner;
 import javax.swing.border.Border;
+
+import Board;
+import Player;
+import WordleGame;
 
 /**
  * Wordle Graphical User Interface
