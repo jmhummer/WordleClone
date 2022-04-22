@@ -93,14 +93,14 @@ public class Board {
     }
     
     /**
-     * Adds an array of a word to the 2D letters array and
-     * adds an array of colors to the 2D colors array.
+     * Adds a char array of the guessWord to the 2D letters array and
+     * adds a String array of colors to the 2D colors array.
      * Sets each letter's color to orange if it is in the correct position
      * Otherwise, sets each letter's color to blue if it is in the word and incorrect position
      * Otherwise, keeps the letter's color to the default initialization of black
      *
      * @param guessWord the word that was guessed by the user
-     * @throws IllegalArgumentException if the parameter arrays are not the same length as the
+     * @throws IllegalArgumentException if the guessWord is not the same length as the
      *                                  rows in the private field arrays or
      *                                  if there is no more room in the private field arrays
      */
