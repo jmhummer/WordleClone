@@ -116,19 +116,19 @@ public class WordleGame {
         // Continue Game
         } else if (oldMessage.indexOf("continue") > 0) {
             // Game Over
-            if(currentGuess == NUMBER_OF_GUESSES && currentPlayer == NUMBER_OF_PLAYERS
+            if(currentGuess == NUMBER_OF_GUESSES && currentPlayer == (NUMBER_OF_PLAYERS - 1)
                             && currentRound == NUMBER_OF_ROUNDS) {
-                if (player[1].getScore() == player[2].getScore()) {
+                if (player[0].getScore() == player[1].getScore()) {
                     newMessage = "Game Over. It is a TIE!";
-                } else if (player[1].getScore() > player[2].getScore()) {
-                    newMessage = "Game Over. " + player[1].getName() + " WINS!";
+                } else if (player[0].getScore() > player[1].getScore()) {
+                    newMessage = "Game Over. " + player[0].getName() + " WINS!";
                 } else {
-                    newMessage = "Game Over. " + player[2].getName() + " WINS!";
+                    newMessage = "Game Over. " + player[1].getName() + " WINS!";
                 }
             // Next Round
-            } else if (currentGuess == NUMBER_OF_GUESSES && currentPlayer == NUMBER_OF_PLAYERS) {
+            } else if (currentGuess == NUMBER_OF_GUESSES && currentPlayer == (NUMBER_OF_PLAYERS - 1)) {
                 currentGuess = 1;
-                currentPlayer = 1;
+                currentPlayer = 0;
                 currentRound++;
                 wordle.newAnswer();
                 newMessage = player[currentPlayer].getName() + "Guess the Wordle.";
