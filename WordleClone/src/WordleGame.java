@@ -56,9 +56,10 @@ public class WordleGame {
         for(int i = 0; i < player.length; i++) {
             player[i] = new Player();
         }
+        
         board = new Board(NUMBER_OF_GUESSES, NUMBER_OF_LETTERS, wordle.getAnswer());
         currentPlayer = 1;
-        currentRound = 1;
+        currentRound = 0;
         currentGuess = 1;
     }
     
@@ -70,20 +71,23 @@ public class WordleGame {
      */
     public String next(String input, String oldMessage) {
         String newMessage = null;
+        String name = input;
         input = input.toLowerCase();
         oldMessage = oldMessage.toLowerCase();
         
-        // Input Player Names
+        // Input Player names
         if (oldMessage.indexOf("name") > 0) {
             if (currentPlayer < NUMBER_OF_PLAYERS) {
-                player[currentPlayer].addName(input);
+                player[currentPlayer - 1].addName(name);
                 currentPlayer++;
-                newMessage = "Input Player " + currentPlayer + "'s Name and Click Enter.";
+                newMessage = "Input Player " + currentPlayer + "'s name and click ENTER.";
             } else { // last player name
-                player[currentPlayer].addName(input);
-                currentPlayer = 1; // start game with player 1
+                player[currentPlayer - 1].addName(name);
+                currentPlayer = 0; // start game with player 1
                 // no score or round update
                 newMessage = player[currentPlayer].getName() + ": Guess the Wordle.";
+                currentRound++;
+                System.out.println("Current Round: " + currentRound);
             }
         // Enter Guess
         } else if (oldMessage.indexOf("word") > 0) {
@@ -92,6 +96,7 @@ public class WordleGame {
                     board.addGuess(input);
                     newMessage = player[currentPlayer].getName() + ": Correct! Click Enter to Continue.";
                     player[currentPlayer].addScore(currentGuess);
+
                 // Taken Guess
                 } else if (wordle.isWord(input)) {
                     board.addGuess(input);
@@ -162,5 +167,13 @@ public class WordleGame {
      */
     public Board getBoard() {
         return board;
+    }
+
+    /**
+     * Return the current guess number
+     * @return currentGuess
+     */
+    public int getCurrentGuess() {
+        return currentGuess;
     }
 }

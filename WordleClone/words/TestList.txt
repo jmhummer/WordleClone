@@ -1,10 +1,10 @@
 shape
-circle
+store
 round
-square
+storm
 boxed
 fruit
 grape
 sweet
 berry
-citrus
+grape

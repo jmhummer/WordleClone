@@ -30,7 +30,6 @@ public class Player {
     /** The player's name */
     private String name;
     
-    
     /**
      * Constructs the player name and score
      */
@@ -47,6 +46,10 @@ public class Player {
         return score;
     }
     
+    public Player getPlayer() {
+        return this;
+    }
+
     /**
      * Adds the appropriate amount of points to the player's score depending on the amount of guesses
      * @param currentGuess The amount of guesses the player has in a round
@@ -68,6 +71,7 @@ public class Player {
      * @return name The name of the player
      */
     public String getName() {
+        Random rnd = new Random();
         return name;
     }
     

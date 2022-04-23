@@ -1,4 +1,3 @@
-package Backup;
 // javac -d bin -cp bin src/WordleGUI.java
 // java -cp bin WordleGUI
 
@@ -9,10 +8,6 @@ import java.time.chrono.ThaiBuddhistChronology;
 import java.util.Random;
 import java.util.Scanner;
 import javax.swing.border.Border;
-
-import Board;
-import Player;
-import WordleGame;
 
 /**
  * Wordle Graphical User Interface
@@ -27,17 +22,21 @@ public class WordleGUI extends JFrame implements ActionListener
 
     private WordleGame wg;
     private Player[] player;
+    private Board board;
 
-    String message;
+    private String message;
 
     /** x coordinate of upper lefthand corner of GUI */
-    public static final int X = 50;
+    public static final int X = 400;
 
     /** y coordinate of upper lefthand corner of GUI */
     public static final int Y = 50;
     
     /** Font size of text */
     public static final int FONT_SIZE = 15;
+
+    /** Font size for guess letters */
+    public static final int GUESS_FONT_SIZE = 22;
 
     /** Width of text */
     public static final int TEXT_WIDTH = 10;
@@ -48,8 +47,10 @@ public class WordleGUI extends JFrame implements ActionListener
     
     public static final int NUM_OF_LETTERS = 5;
 
-    private JLabel playerOneLabel, playerTwoLabel, roundLabel, messageLabel, letterLabel, blankLabel;
-    private JPanel mainPanel, panelOne, panelTwo, individualGuessPanel, bottomPanel;
+    public static final int NUM_OF_PLAYERS = 2;
+
+    private JLabel playerLabel[], roundLabel, messageLabel, letterLabel[][], directionsLabel;
+    private JPanel mainPanel, panelOne, panelTwo, guessPanel[], bottomPanel;
     private JTextField guessTextField;
 
     /** Buttons */
@@ -63,7 +64,21 @@ public class WordleGUI extends JFrame implements ActionListener
     public WordleGUI(int testFlag) {
         
         wg = new WordleGame(testFlag);
-        
+        board = wg.getBoard();
+
+        letterLabel = new JLabel[NUM_OF_GUESSES][NUM_OF_LETTERS];
+        playerLabel = new JLabel[NUM_OF_PLAYERS];
+        guessPanel = new JPanel[NUM_OF_GUESSES];
+        player = new Player[2];
+
+        message = "Input Player 1's name and click ENTER.";
+        player = new Player[NUM_OF_PLAYERS];
+        playerLabel = new JLabel[NUM_OF_PLAYERS];
+        for(int i = 0; i < player.length; i++) {
+            player[i] = new Player();
+        }
+        playerLabel[0] = new JLabel();
+
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int width = 400;
 		int height = 600;
@@ -71,58 +86,39 @@ public class WordleGUI extends JFrame implements ActionListener
         setSize(width, height);
         setLocation(X, Y);
         setTitle("Wordle Clone");
+        Container c = getContentPane(); 
 
-        player = new Player[2];
-        player[0] = new Player();
-        player[1] = new Player();
-        //player = wg.getPlayer();        
-
-        wg.newGame();
-        player[1].addName("Julia");
-        //System.out.println(wg.getName(1));
-
-        this.message = "Press ENTER to continue.";
-        updateGUI(player);
-    }
-
-    private void updateGUI(Player[] player) {
-        
-        Container c = getContentPane();  
-        Player[] player2 = new Player[2];
-        player2 = wg.getPlayer();
         String name = player[0].getName();
-        //String name = wg.getName(0);
-        //String name = "Ben";
+
         if(name == null)
             name = "Player 1";
-        //int score = player[0].getScore();
-        int score = -1;
-        playerOneLabel = new JLabel(name + ": " + score + " points");
-        playerOneLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
-        playerOneLabel.setHorizontalAlignment(JLabel.CENTER);
-        playerOneLabel.setOpaque(true);
-        playerOneLabel.setBackground(Color.darkGray);
-        playerOneLabel.setForeground(Color.white);
+        int score = player[0].getScore();
+        playerLabel[0] = new JLabel(name + ": " + score + " points");
+        playerLabel[0].setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
+        playerLabel[0].setHorizontalAlignment(JLabel.CENTER);
+        playerLabel[0].setOpaque(true);
+        playerLabel[0].setBackground(Color.darkGray);
+        playerLabel[0].setForeground(Color.white);
         Border border = BorderFactory.createLineBorder(Color.BLACK, BORDER_WIDTH);
-        playerOneLabel.setBorder(border);
+        playerLabel[0].setBorder(border);
 
         name = player[1].getName();
         if(name == null)
             name = "Player 2";
-        //score = player[1].getScore();
-        playerTwoLabel = new JLabel(name + ": " + score + " points");
-        playerTwoLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
-        playerTwoLabel.setHorizontalAlignment(JLabel.CENTER);
-        playerTwoLabel.setOpaque(true);
-        playerTwoLabel.setBackground(Color.darkGray);
-        playerTwoLabel.setForeground(Color.white);
+        score = player[1].getScore();
+        playerLabel[1] = new JLabel(name + ": " + score + " points");
+        playerLabel[1].setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
+        playerLabel[1].setHorizontalAlignment(JLabel.CENTER);
+        playerLabel[1].setOpaque(true);
+        playerLabel[1].setBackground(Color.darkGray);
+        playerLabel[1].setForeground(Color.white);
         border = BorderFactory.createLineBorder(Color.BLACK, BORDER_WIDTH);
-        playerTwoLabel.setBorder(border); 
+        playerLabel[1].setBorder(border); 
 
         panelOne = new JPanel();
         panelOne.setLayout(new GridLayout(1, 2));
-        panelOne.add(playerOneLabel);
-        panelOne.add(playerTwoLabel);
+        panelOne.add(playerLabel[0]);
+        panelOne.add(playerLabel[1]);
 
         int roundNum = wg.getCurrentRound();
         String round = "round " + roundNum + " of 5";
@@ -155,57 +151,44 @@ public class WordleGUI extends JFrame implements ActionListener
         mainPanel.add(panelOne);
         mainPanel.add(panelTwo);
 
-        Board board = wg.getCurrentBoard(); //TODO: add this to WordleGame
+        Board board = wg.getBoard(); //TODO: add this to WordleGame
         
         for(int guess = 0; guess < NUM_OF_GUESSES; guess++) {           
             
-            individualGuessPanel = new JPanel();
-            individualGuessPanel.setLayout(new GridLayout(1, 5));
+            guessPanel[guess] = new JPanel();
+            guessPanel[guess].setLayout(new GridLayout(1, 5));
             
-            for(int letter = 0; letter < NUM_OF_LETTERS; letter++) {                
-                
-                char guessArray[] = board.getGuessLetters(guess);
-                String guessLetter = "b" + guessArray[letter];
-                //String guessLetter = "A";            
-                letterLabel = new JLabel(guessLetter);
-                letterLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
-                letterLabel.setHorizontalAlignment(JLabel.CENTER);
-                letterLabel.setOpaque(true);
+            for(int letter = 0; letter < NUM_OF_LETTERS; letter++) {                         
+                letterLabel[guess][letter] = new JLabel();
+                letterLabel[guess][letter].setFont(new Font("SansSerif",Font.BOLD,GUESS_FONT_SIZE));
+                letterLabel[guess][letter].setHorizontalAlignment(JLabel.CENTER);
+                letterLabel[guess][letter].setOpaque(true);
+                letterLabel[guess][letter].setText("");
                 
                 String colorOfLetters[] = board.getGuessColors(guess);
                 String color = colorOfLetters[letter];
                 //Add a switch statement for the color if using 'color' doesn't work.
-                letterLabel.setBackground(Color.BLACK);
-                letterLabel.setForeground(Color.WHITE);
+                letterLabel[guess][letter].setBackground(Color.BLACK);
+                letterLabel[guess][letter].setForeground(Color.WHITE);
                 border = BorderFactory.createLineBorder(Color.DARK_GRAY, BORDER_WIDTH);
-                letterLabel.setBorder(border); 
-                individualGuessPanel.add(letterLabel);
-                individualGuessPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+                letterLabel[guess][letter].setBorder(border); 
+                guessPanel[guess].add(letterLabel[guess][letter]);
+                guessPanel[guess].setBorder(BorderFactory.createLineBorder(Color.black));
             }
-            mainPanel.add(individualGuessPanel);
+            mainPanel.add(guessPanel[guess]);
         }
         
-        String labelText;
-        if(wg.getCurrentRound() == 0)
-            labelText = "Enter your name:  ";
-        else
-            labelText = "Enter your guess:  ";
-        
-        blankLabel = new JLabel(labelText);
-        blankLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
-        blankLabel.setHorizontalAlignment(JLabel.RIGHT);
-        blankLabel.setOpaque(true);
-        blankLabel.setBackground(Color.darkGray);
-        blankLabel.setForeground(Color.white);
+        directionsLabel = new JLabel("Enter your name:");
+        directionsLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
+        directionsLabel.setHorizontalAlignment(JLabel.CENTER);
+        directionsLabel.setOpaque(true);
+        directionsLabel.setBackground(Color.darkGray);
+        directionsLabel.setForeground(Color.white);
         border = BorderFactory.createLineBorder(Color.BLACK, BORDER_WIDTH);
-        blankLabel.setBorder(border);
+        directionsLabel.setBorder(border);
 
         guessTextField = new JTextField(5);
-        if(wg.getCurrentRound() == 0)
-            guessTextField.setText("Place Input Here");
-        else
-            guessTextField.setText("");
-        
+        guessTextField.setText("");
         guessTextField.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
         guessTextField.setHorizontalAlignment(JTextField.CENTER);
         guessTextField.setBackground(Color.WHITE);
@@ -215,6 +198,7 @@ public class WordleGUI extends JFrame implements ActionListener
         guessTextField.setBorder(border);
 
         quitButton = new JButton("QUIT");
+        quitButton.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
         quitButton.setOpaque(true);
         quitButton.setBackground(Color.darkGray);
         quitButton.setForeground(Color.white);
@@ -222,6 +206,7 @@ public class WordleGUI extends JFrame implements ActionListener
         quitButton.setBorder(border);
 
         enterButton = new JButton("ENTER");
+        enterButton.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
         enterButton.setOpaque(true);
         enterButton.setBackground(Color.darkGray);
         enterButton.setForeground(Color.white);
@@ -230,7 +215,7 @@ public class WordleGUI extends JFrame implements ActionListener
 
         bottomPanel = new JPanel();
         bottomPanel.setLayout(new GridLayout(2, 2));
-        bottomPanel.add(blankLabel);
+        bottomPanel.add(directionsLabel);
         bottomPanel.add(guessTextField);
         bottomPanel.add(quitButton);
         bottomPanel.add(enterButton);
@@ -241,11 +226,13 @@ public class WordleGUI extends JFrame implements ActionListener
         setVisible(true);
 
         quitButton.addActionListener(this);
-        enterButton.addActionListener(this);
+        enterButton.addActionListener(this);     
 
-        Random rnd = new Random();
-        System.out.println(rnd.nextInt(10));
-        System.out.println("here again");
+        this.message = "Press ENTER to continue.";     
+    }
+
+    private void updateGUI(Player[] player) {
+        
     }
 
     
@@ -258,27 +245,67 @@ public class WordleGUI extends JFrame implements ActionListener
         this.message = null;
         
         input = guessTextField.getText();
-        this.message = messageLabel.getText();
-        
-        /*I think this logic should be in WordleGame.
-        if(e.getSource() == btnEnter && !(input.equals("") || input.equals("[Enter Input Here]"))) {
-
-            this.PlayerlblPlayer1.setText(Player[1].getName + ": " + Player[1].getScore); //TODO initialize name as "[Player i Name]" and score  as 0
-            lblPlayer2.setText(Player[2].getName + ": " + Player[2].getScore);
-            lblRound.setText("Round " + wg.getCurrentRound() + " of " & wg.ROUNDS);
-            lblMessage.setText(message); // update message
-        */
+        message = messageLabel.getText();
         
         if(e.getSource() == enterButton) {
-            this.message = wg.next(input, message);
             
-            Player[] player = new Player[2];
-            player[0] = new Player();
-            player[1] = new Player();
-            //player = wg.getPlayer();
-            player[0].addName("Tyler");
-            player[0].getName();
-            updateGUI(player);
+            message = wg.next(input, message);
+            guessTextField.setText("");
+            messageLabel.setText(message);
+            
+            String[] name = new String[NUM_OF_PLAYERS];
+            int[] score = new int[NUM_OF_PLAYERS];
+
+            for(int i = 0; i < NUM_OF_PLAYERS; i++) {
+                player = wg.getPlayer();
+                name[i] = player[i].getName();
+                if(name[i] == null)
+                    name[i] = "Player " + (i + 1);
+                
+                score[i] = player[i].getScore();
+                playerLabel[i].setText(name[i] + ": " + score[i] + " points");
+            }
+
+            int guessNumber = wg.getCurrentGuess();
+            int guessIndex = -1;
+            
+            //adjusting the guessIndex versus the current wg.currentGuess
+            if(guessNumber == 2)
+                directionsLabel.setText("Enter your guess:");
+
+            if(guessNumber > 1) {
+                guessIndex = guessNumber - 2;
+
+                
+            int round = wg.getCurrentRound();
+            roundLabel.setText("Round " + round + " of 5");                
+
+            board = wg.getBoard();
+            char[][] guessLettersArray = board.getGuessLettersArray();
+            String[][] guessColorsArray = board.getGuessColorsArray();
+            for(int guess = 0; guess < NUM_OF_GUESSES; guess++) {
+                for(int letter = 0; letter < NUM_OF_LETTERS; letter++) {
+                    letterLabel[guess][letter].setText("" + guessLettersArray[guess][letter]);
+                    switch (guessColorsArray[guess][letter]) {
+                        case "black":
+                            letterLabel[guess][letter].setBackground(Color.BLACK);
+                            break;
+                    
+                        case "blue":
+                            letterLabel[guess][letter].setBackground(Color.BLUE);
+                            break;
+
+                        case "orange":
+                            letterLabel[guess][letter].setBackground(Color.ORANGE);
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+            }
+           
         } else if (e.getSource() == quitButton) { // exit game
             System.exit(1);
         }
@@ -303,3 +330,10 @@ public class WordleGUI extends JFrame implements ActionListener
         }
     }
 }
+
+//TODO: make panel array
+//assign letters to panel
+//make getColorsArray
+//figure out colors
+//Figure out a way to just update the current guess
+//combine player[i] initialization into a for loop

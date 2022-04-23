@@ -188,4 +188,15 @@ public class Board {
         return boardString;
     }
 
+    public int getCurrentGuess() {
+        return currentGuesses;
+    }
+
+    public char[][] getGuessLettersArray() {
+        return letters;
+    }
+
+    public String[][] getGuessColorsArray() {
+        return colors;
+    }
 }
