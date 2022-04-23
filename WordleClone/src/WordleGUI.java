@@ -16,7 +16,7 @@ import javax.swing.border.Border;
  * @author Nick Sanford
  * @author Ben Morris
  */
-public class WordleGUI extends JFrame implements ActionListener 
+public class WordleGUI extends JFrame implements ActionListener, KeyListener 
 {
     //private String message = ""; Don't need this to be a field. Made it a local variable.
 
@@ -231,6 +231,7 @@ public class WordleGUI extends JFrame implements ActionListener
         c.add(mainPanel);
         setVisible(true);
 
+        guessTextField.addKeyListener(this);
         quitButton.addActionListener(this);
         enterButton.addActionListener(this);     
 
@@ -241,81 +242,96 @@ public class WordleGUI extends JFrame implements ActionListener
         
     }
 
-    
-    /**
-     * Executes action based on event
-     * @param e event (button press, etc.)
-     */
-    public void actionPerformed(ActionEvent e) {
+    public void updateGUI() {
+
         String input = null;
         this.message = null;
         
         input = guessTextField.getText();
         message = messageLabel.getText();
         
-        if(e.getSource() == enterButton) {
-            
-            message = wg.next(input, message);
-            guessTextField.setText("");
-            messageLabel.setText(message);
-            
-            int round = wg.getCurrentRound();
+        message = wg.next(input, message);
+        guessTextField.setText("");
+        guessTextField.requestFocusInWindow();
+        messageLabel.setText(message);
+        
+        int round = wg.getCurrentRound();
 
-            String[] name = new String[NUM_OF_PLAYERS];
-            int[] score = new int[NUM_OF_PLAYERS];
+        String[] name = new String[NUM_OF_PLAYERS];
+        int[] score = new int[NUM_OF_PLAYERS];
 
-            for(int i = 0; i < NUM_OF_PLAYERS; i++) {
-                player = wg.getPlayer();
-                name[i] = player[i].getName();
-                if(name[i] == null)
-                    name[i] = "Player " + (i + 1);
+        for(int i = 0; i < NUM_OF_PLAYERS; i++) {
+            player = wg.getPlayer();
+            name[i] = player[i].getName();
+            if(name[i] == null)
+                name[i] = "Player " + (i + 1);
+            
+            score[i] = player[i].getScore();
+            playerLabel[i].setText(name[i] + ": " + score[i] + " points");
+        }
+
+        int guessNumber = wg.getCurrentGuess();
+        int guessIndex = -1;
+        
+        //adjusting the guessIndex versus the current wg.currentGuess
+        if(guessNumber == 1 && round == 1)
+            directionsLabel.setText("Enter your guess:");
+
+        if(guessNumber > 1)
+            guessIndex = guessNumber - 2;
+
+        roundLabel.setText("Round " + round + " of 5");                
+
+        board = wg.getBoard();
+        char[][] guessLettersArray = board.getGuessLettersArray();
+        String[][] guessColorsArray = board.getGuessColorsArray();
+        for(int guess = 0; guess < NUM_OF_GUESSES; guess++) {
+            for(int letter = 0; letter < NUM_OF_LETTERS; letter++) {
+                letterLabel[guess][letter].setText("" + guessLettersArray[guess][letter]);
+                switch (guessColorsArray[guess][letter]) {
+                    case "black":
+                        letterLabel[guess][letter].setBackground(Color.BLACK);
+                        break;
                 
-                score[i] = player[i].getScore();
-                playerLabel[i].setText(name[i] + ": " + score[i] + " points");
-            }
+                    case "blue":
+                        letterLabel[guess][letter].setBackground(Color.BLUE);
+                        break;
 
-            int guessNumber = wg.getCurrentGuess();
-            int guessIndex = -1;
-            
-            //adjusting the guessIndex versus the current wg.currentGuess
-            if(guessNumber == 1 && round == 1)
-                directionsLabel.setText("Enter your guess:");
+                    case "orange":
+                        letterLabel[guess][letter].setBackground(Color.ORANGE);
+                        break;
 
-            if(guessNumber > 1)
-                guessIndex = guessNumber - 2;
-
-            roundLabel.setText("Round " + round + " of 5");                
-
-            board = wg.getBoard();
-            char[][] guessLettersArray = board.getGuessLettersArray();
-            String[][] guessColorsArray = board.getGuessColorsArray();
-            for(int guess = 0; guess < NUM_OF_GUESSES; guess++) {
-                for(int letter = 0; letter < NUM_OF_LETTERS; letter++) {
-                    letterLabel[guess][letter].setText("" + guessLettersArray[guess][letter]);
-                    switch (guessColorsArray[guess][letter]) {
-                        case "black":
-                            letterLabel[guess][letter].setBackground(Color.BLACK);
-                            break;
-                    
-                        case "blue":
-                            letterLabel[guess][letter].setBackground(Color.BLUE);
-                            break;
-
-                        case "orange":
-                            letterLabel[guess][letter].setBackground(Color.ORANGE);
-                            break;
-
-                        default:
-                            break;
-                    }
+                    default:
+                        break;
                 }
             }
-           
+        }
+    }
+    
+    /**
+     * Executes action based on event
+     * @param e event (button press, etc.)
+     */
+    public void actionPerformed(ActionEvent e) {
+        
+        if(e.getSource() == enterButton) {
+            updateGUI();     
         } else if (e.getSource() == quitButton) { // exit game
             System.exit(1);
         }
     }
     
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode()==KeyEvent.VK_ENTER){
+          updateGUI();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent arg) {}
+    @Override
+    public void keyTyped(KeyEvent arg) {}
+
     /**
      * Starts up Wordle game
      * @param args args[0] optional testFlag used for testing
