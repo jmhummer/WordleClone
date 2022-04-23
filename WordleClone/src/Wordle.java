@@ -59,6 +59,7 @@ public class Wordle {
     public void newAnswer() {
         int oldAnswerIndex;
         int newAnswerIndex;
+        String oldWordle = wordle;
         //If test mode is active, find the previous word in the test array 
         //and pull the next word in line
         if (test == -1 && wordleList.length == 10) {
@@ -67,7 +68,7 @@ public class Wordle {
             }
             else {
                 for(int i = 0; i < wordleList.length; i++) {
-                    if (wordleList[i].equals(wordle)) {
+                    if (wordleList[i].equals(oldWordle)) {
                         oldAnswerIndex = i;
                         wordle = wordleList[oldAnswerIndex + 1];
                     }

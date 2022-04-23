@@ -87,7 +87,6 @@ public class WordleGame {
                 // no score or round update
                 newMessage = player[currentPlayer].getName() + ": Guess the Wordle.";
                 currentRound++;
-                System.out.println("Current Round: " + currentRound);
             }
         // Enter Guess
         } else if (oldMessage.indexOf("word") > 0) {
@@ -96,11 +95,12 @@ public class WordleGame {
                     board.addGuess(input);
                     newMessage = player[currentPlayer].getName() + ": Correct! Click Enter to Continue.";
                     player[currentPlayer].addScore(currentGuess);
+                    currentGuess = NUMBER_OF_GUESSES;
 
                 // Taken Guess
                 } else if (wordle.isWord(input)) {
                     board.addGuess(input);
-                    if (currentGuess == NUMBER_OF_GUESSES) { // out of guess
+                    if (currentGuess == NUMBER_OF_GUESSES) { // out of guesses
                         newMessage = player[currentPlayer].getName() + ": Out of guesses. Click Enter to Continue.";
                     } else { // next guess
                         newMessage = player[currentPlayer].getName() + ": Guess the Wordle.";
@@ -116,29 +116,32 @@ public class WordleGame {
         // Continue Game
         } else if (oldMessage.indexOf("continue") > 0) {
             // Game Over
-            if(currentGuess == NUMBER_OF_GUESSES && currentPlayer == NUMBER_OF_PLAYERS
+            if(currentGuess == NUMBER_OF_GUESSES && currentPlayer == (NUMBER_OF_PLAYERS - 1)
                             && currentRound == NUMBER_OF_ROUNDS) {
-                if (player[1].getScore() == player[2].getScore()) {
+                if (player[0].getScore() == player[1].getScore()) {
                     newMessage = "Game Over. It is a TIE!";
-                } else if (player[1].getScore() > player[2].getScore()) {
-                    newMessage = "Game Over. " + player[1].getName() + " WINS!";
+                } else if (player[0].getScore() > player[1].getScore()) {
+                    newMessage = "Game Over. " + player[0].getName() + " WINS!";
                 } else {
-                    newMessage = "Game Over. " + player[2].getName() + " WINS!";
+                    newMessage = "Game Over. " + player[1].getName() + " WINS!";
                 }
             // Next Round
-            } else if (currentGuess == NUMBER_OF_GUESSES && currentPlayer == NUMBER_OF_PLAYERS) {
+            } else if (currentGuess == NUMBER_OF_GUESSES && currentPlayer == (NUMBER_OF_PLAYERS - 1)) {
                 currentGuess = 1;
-                currentPlayer = 1;
+                currentPlayer = 0;
                 currentRound++;
                 wordle.newAnswer();
-                newMessage = player[currentPlayer].getName() + "Guess the Wordle.";
+                newMessage = player[currentPlayer].getName() + ": Guess the Wordle.";
                 board = new Board(NUMBER_OF_GUESSES, NUMBER_OF_LETTERS, wordle.getAnswer());
             // Next Player
             } else if (currentGuess == NUMBER_OF_GUESSES) {
                 currentGuess = 1;
-                currentPlayer++;
+                if(currentPlayer < (NUMBER_OF_PLAYERS - 1))
+                    currentPlayer++;
+                else
+                    currentPlayer = 0;
                 wordle.newAnswer();
-                newMessage = player[currentPlayer].getName() + "Guess the Wordle.";
+                newMessage = player[currentPlayer].getName() + ": Guess the Wordle.";
                 board = new Board(NUMBER_OF_GUESSES, NUMBER_OF_LETTERS, wordle.getAnswer());
             }
         }

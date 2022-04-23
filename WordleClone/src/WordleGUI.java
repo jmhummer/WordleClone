@@ -31,6 +31,12 @@ public class WordleGUI extends JFrame implements ActionListener
 
     /** y coordinate of upper lefthand corner of GUI */
     public static final int Y = 50;
+
+    /** Pixel width of original game window */
+    public static final int WINDOW_WIDTH = 396;
+
+    /** Pixel height of original game window */
+    public static final int WINDOW_HEIGHT = 595;
     
     /** Font size of text */
     public static final int FONT_SIZE = 15;
@@ -80,8 +86,8 @@ public class WordleGUI extends JFrame implements ActionListener
         playerLabel[0] = new JLabel();
 
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = 400;
-		int height = 600;
+        int width = WINDOW_WIDTH;
+		int height = WINDOW_HEIGHT;
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(width, height);
         setLocation(X, Y);
@@ -121,7 +127,7 @@ public class WordleGUI extends JFrame implements ActionListener
         panelOne.add(playerLabel[1]);
 
         int roundNum = wg.getCurrentRound();
-        String round = "round " + roundNum + " of 5";
+        String round = "Round " + roundNum + " of 5";
         roundLabel = new JLabel(round);
         roundLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
         roundLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -253,6 +259,8 @@ public class WordleGUI extends JFrame implements ActionListener
             guessTextField.setText("");
             messageLabel.setText(message);
             
+            int round = wg.getCurrentRound();
+
             String[] name = new String[NUM_OF_PLAYERS];
             int[] score = new int[NUM_OF_PLAYERS];
 
@@ -270,14 +278,12 @@ public class WordleGUI extends JFrame implements ActionListener
             int guessIndex = -1;
             
             //adjusting the guessIndex versus the current wg.currentGuess
-            if(guessNumber == 2)
+            if(guessNumber == 1 && round == 1)
                 directionsLabel.setText("Enter your guess:");
 
-            if(guessNumber > 1) {
+            if(guessNumber > 1)
                 guessIndex = guessNumber - 2;
 
-                
-            int round = wg.getCurrentRound();
             roundLabel.setText("Round " + round + " of 5");                
 
             board = wg.getBoard();
@@ -303,7 +309,6 @@ public class WordleGUI extends JFrame implements ActionListener
                             break;
                     }
                 }
-            }
             }
            
         } else if (e.getSource() == quitButton) { // exit game
