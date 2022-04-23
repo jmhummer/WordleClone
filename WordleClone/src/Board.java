@@ -2,8 +2,8 @@
 /**
  * Implements storage for the data needed to display the board/grid of guesses.
  * For each guess of the current round, it contains each letter and the color 
- * associated with each letter (green for correct position, yellow for incorrect position,
- *                              white for not in word)
+ * associated with each letter (orange for correct position, blue for incorrect position,
+ *                              black for not in word)
  *
  * @author Nick Sanford
  * @author Nick Schauer
@@ -20,12 +20,14 @@ public class Board {
     
     /** 2D array of letters guessed so far
      *  Each row represents a word, each column represents a letter within that word
+     *  Note: the default initialization value of a char is '\\u0000'
      */
     private char[][] letters;
     
     /** 2D array of colors corresponding to letters guessed so far
      *  Each row represents a word, each column represents a color within that word
      *  Black incorrect, blue wrong pos but is in word, orange correct position
+     *  Note: the String will have been initialized to the notInWordColor by the constructor
      */
     private String[][] colors;
     
@@ -43,13 +45,14 @@ public class Board {
     /** The color of a letter that is not in the word/default color: black */
     private String notInWordColor;
     
-    /** The word that the user is trying to guess (the "wordle") */
+    /** The word that the user is trying to guess (the "wordle") in char array format */
     private char[] targetWordArray;
     
     /**
      * Constructor method for a Board object
      * @param wordLength the number of letters in the guessed words (typically 5)
      * @param numTotalGuesses the number of guesses allowed on each player's turn (typically 6)
+     * @param targetWord the word that the user is trying to guess (the "wordle")
      * @throws IllegalArgumentException if the word length or number of guesses is < 1 or
      *                                  if the targetWord has a different length
      */
@@ -90,18 +93,17 @@ public class Board {
     }
     
     /**
-     * Adds an array of a word to the 2D letters array and
-     * adds an array of colors to the 2D colors array
+     * Adds a char array of the guessWord to the 2D letters array and
+     * adds a String array of colors to the 2D colors array.
+     * Sets each letter's color to orange if it is in the correct position
+     * Otherwise, sets each letter's color to blue if it is in the word and incorrect position
+     * Otherwise, keeps the letter's color to the default initialization of black
      *
      * @param guessWord the word that was guessed by the user
-     * @throws IllegalArgumentException if the parameter arrays are not the same length as the
+     * @throws IllegalArgumentException if the guessWord is not the same length as the
      *                                  rows in the private field arrays or
      *                                  if there is no more room in the private field arrays
      */
-     // TODO review program logic
-     // TODO update javadoc
-     // TODO update CE report document
-     // TODO write unit tests
     public void addGuess(String guessWord) {
         int lettersPerWord = letters[0].length;
         // Check to make sure that there won't be any array indexing issues
@@ -126,6 +128,7 @@ public class Board {
         for (int i = 0; i < lettersPerWord; i++) {
             numOfEachLetter[targetWordArray[i] - CAPITAL_A_ASCII_VALUE]++;
         }
+        
         // Compare guessed word letters to target word letters
         for (int i = 0; i < lettersPerWord; i++) {
             // Check if the letters match
@@ -134,8 +137,13 @@ public class Board {
                 // Decrement the number of that letter remaining in the word
                 numOfEachLetter[targetWordArray[i] - CAPITAL_A_ASCII_VALUE]--;
             }
-            // Check if the letter exists in the targetWord elsewhere
-            else if (numOfEachLetter[letters[currentGuesses][i] - CAPITAL_A_ASCII_VALUE] > 0) {
+        }
+        
+        // Check if the letter exists in the targetWord elsewhere
+        // Check if the letter has already been set to "correct position" color, do not overwrite
+        for (int i = 0; i < lettersPerWord; i++) {
+            if ((numOfEachLetter[letters[currentGuesses][i] - CAPITAL_A_ASCII_VALUE] > 0) &&
+                (colors[currentGuesses][i].equals(notInWordColor))) {
                 colors[currentGuesses][i] = incorrectPositionColor;
                 numOfEachLetter[letters[currentGuesses][i] - CAPITAL_A_ASCII_VALUE]--;
             }

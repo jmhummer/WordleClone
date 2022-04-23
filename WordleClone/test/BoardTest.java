@@ -10,62 +10,67 @@ import org.junit.jupiter.api.Test;
  */
 public class BoardTest {
 
-    private char[] lettersArray1 = {'h', 'e', 'l', 'l', 'o'};
-    private char[] lettersArray2 = {'s', 't', 'a', 'm', 'p'};
-    private char[] lettersArray3 = {'c', 'r', 'a', 'n', 'e'};
-    private char[] lettersArray4 = {'m', 'u', 'l', 'c', 'h'};
-    private char[] lettersArray5 = {'n', 'i', 'n', 'j', 'a'};
-    private char[] lettersArray6 = {'w', 'a', 't', 'e', 'r'};
-    private char[] lettersArray7 = {'h', 'a', 'p', 'p', 'y'};
+    private String guessedWord1 = "HELLO";
+    private String guessedWord2 = "STAMP";
+    private String guessedWord3 = "CRANE";
+    private String guessedWord4 = "MULCH";
+    private String guessedWord5 = "NINJA";
+    private String guessedWord6 = "WATER";
+    private String guessedWord7 = "HAPPY";
+    private String guessedWord8 = "POPPY";
     
-    private String[] colorsArray1 = {"green", "green", "green", "green", "green"};
-    private String[] colorsArray2 = {"green", "green", "gray", "yellow", "gray"};
-    private String[] colorsArray3 = {"gray", "green", "green", "yellow", "gray"};
-    private String[] colorsArray4 = {"green", "green", "gray", "gray", "gray"};
-    private String[] colorsArray5 = {"gray", "gray", "gray", "gray", "gray"};
-    private String[] colorsArray6 = {"gray", "green", "gray", "green", "green"};
-    private String[] colorsArray7 = {"yellow", "gray", "gray", "green", "yellow"};
     
     @Test
-    public void testToStringFullBoard() {
-        // Create Board with 5 letters per word and 6 max guesses
-        Board gameBoard = new Board(6, 5);
-        gameBoard.addGuess(lettersArray1, colorsArray1);
-        gameBoard.addGuess(lettersArray2, colorsArray2);
-        gameBoard.addGuess(lettersArray3, colorsArray3);
-        gameBoard.addGuess(lettersArray4, colorsArray4);
-        gameBoard.addGuess(lettersArray5, colorsArray5);
-        gameBoard.addGuess(lettersArray6, colorsArray6);
+    public void testToStringFullBoardHappy() {
+        // Create Board with 5 letters per word and 6 max guesses, target word "happy"
+        Board gameBoard = new Board(6, 5, "happy");
+        gameBoard.addGuess(guessedWord1);
+        gameBoard.addGuess(guessedWord2);
+        gameBoard.addGuess(guessedWord3);
+        gameBoard.addGuess(guessedWord4);
+        gameBoard.addGuess(guessedWord8);
+        gameBoard.addGuess(guessedWord7);
         
         String testBoardString = gameBoard.toString();
-        String expectedString = "hello\ngreen green green green green \n" +
-                                "stamp\ngreen green gray yellow gray \n" +
-                                "crane\ngray green green yellow gray \n" +
-                                "mulch\ngreen green gray gray gray \n" +
-                                "ninja\ngray gray gray gray gray \n" +
-                                "water\ngray green gray green green \n";
+        String expectedString = "HELLO\norange black black black black \n" +
+                                "STAMP\nblack black blue black blue \n" +
+                                "CRANE\nblack black blue black black \n" +
+                                "MULCH\nblack black black black blue \n" +
+                                "POPPY\nblack black orange orange orange \n" +
+                                "HAPPY\norange orange orange orange orange \n";
         
-        assertEquals(expectedString, gameBoard.toString(), "Full Board to String");
+        assertEquals(expectedString, testBoardString, "Happy Full Board to String");
     }
     
     @Test
-    public void testToStringDifferentFullBoard() {
-        Board gameBoard = new Board(6, 5);
-        gameBoard.addGuess(lettersArray1, colorsArray1);
-        gameBoard.addGuess(lettersArray2, colorsArray2);
-        gameBoard.addGuess(lettersArray3, colorsArray3);
-        gameBoard.addGuess(lettersArray4, colorsArray4);
-        gameBoard.addGuess(lettersArray5, colorsArray5);
-        gameBoard.addGuess(lettersArray7, colorsArray7);
+    public void testToStringFullBoardPoppy() {
+        Board gameBoard = new Board(6, 5, "poppy");
+        gameBoard.addGuess(guessedWord1);
+        gameBoard.addGuess(guessedWord2);
+        gameBoard.addGuess(guessedWord3);
+        gameBoard.addGuess(guessedWord4);
+        gameBoard.addGuess(guessedWord7);
+        gameBoard.addGuess(guessedWord8);
         
         String testBoardString = gameBoard.toString();
-        String expectedString = "hello\ngreen green green green green \n" +
-                                "stamp\ngreen green gray yellow gray \n" +
-                                "crane\ngray green green yellow gray \n" +
-                                "mulch\ngreen green gray gray gray \n" +
-                                "ninja\ngray gray gray gray gray \n" +
-                                "water\ngray green gray green green \n";
+        String expectedString = "HELLO\nblack black black black blue \n" +
+                                "STAMP\nblack black black black blue \n" +
+                                "CRANE\nblack black black black black \n" +
+                                "MULCH\nblack black black black black \n" +
+                                "HAPPY\nblack black orange orange orange \n" +
+                                "POPPY\norange orange orange orange orange \n";
         
-        assertNotEquals(expectedString, gameBoard.toString(), "Different Full Board to String");
+        assertEquals(expectedString, testBoardString, "Poppy Full Board to String");
+    }
+    
+    @Test
+    public void testToStringOneGuessApple() {
+        Board gameBoard = new Board(6, 5, "apple");
+        gameBoard.addGuess(guessedWord7);
+        
+        String testBoardString = gameBoard.toString();
+        String expectedString = "HAPPY\nblack blue orange blue black \n";
+        assertEquals(expectedString, testBoardString, "Apple One Guess to String");
+                                
     }
 }
