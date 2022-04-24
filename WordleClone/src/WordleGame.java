@@ -1,6 +1,3 @@
-// TODO - double check what imports are needed
-// javac -d bin -cp bin src/WordleGame.java
-// java -cp bin WordleGame
 import java.util.*;
 
 /**
@@ -11,9 +8,6 @@ import java.util.*;
  * @author Ben Morris
  */
 public class WordleGame {
-    
-    /** Indicates that a random game should be played */
-    public static final int RANDOM_GAME = 0;
     
     /** Number of players in game */
     public static final int NUMBER_OF_PLAYERS = 2;
@@ -50,14 +44,19 @@ public class WordleGame {
      * @param testFlag int random seed for testing
      */
     public WordleGame(int testFlag) {
+        // construct wordle
         wordle = new Wordle(testFlag);
+        // get first answer
         wordle.newAnswer();
+        // array of players
         player = new Player[NUMBER_OF_PLAYERS];
+        // construct each new player in player array
         for(int i = 0; i < player.length; i++) {
             player[i] = new Player();
         }
-        
+        // construct board
         board = new Board(NUMBER_OF_GUESSES, NUMBER_OF_LETTERS, wordle.getAnswer());
+        
         currentPlayer = 1;
         currentRound = 0;
         currentGuess = 1;
@@ -90,29 +89,33 @@ public class WordleGame {
             }
         // Enter Guess
         } else if (oldMessage.indexOf("word") > 0) {
-                // Correct Guess
-                if (wordle.isAnswer(input)) {
-                    board.addGuess(input);
-                    newMessage = player[currentPlayer].getName() + ": Correct! Click Enter to Continue.";
-                    player[currentPlayer].addScore(currentGuess);
-                    currentGuess = NUMBER_OF_GUESSES;
-
-                // Taken Guess
-                } else if (wordle.isWord(input)) {
-                    board.addGuess(input);
-                    if (currentGuess == NUMBER_OF_GUESSES) { // out of guesses
-                        newMessage = player[currentPlayer].getName() + ": Out of guesses. Click Enter to Continue.";
-                    } else { // next guess
-                        newMessage = player[currentPlayer].getName() + ": Guess the Wordle.";
-                        currentGuess++;
-                    }
-                // Not 5 Letter Word
-                } else if (input.length() != NUMBER_OF_LETTERS) {
-                    newMessage = player[currentPlayer].getName() + ": Must be a 5 letter word, try again.";
-                // Not a Word
-                } else {
-                    newMessage = player[currentPlayer].getName() + ": Not a word, try again.";
-                }  
+            // Correct Guess
+            if (wordle.isAnswer(input)) {
+                board.addGuess(input);
+                newMessage = player[currentPlayer].getName() + 
+                                    ": Correct! Click Enter to Continue.";
+                player[currentPlayer].addScore(currentGuess);
+                currentGuess = NUMBER_OF_GUESSES;
+            // Taken Guess
+            } else if (wordle.isWord(input)) {
+                board.addGuess(input);
+                // out of guesses
+                if (currentGuess == NUMBER_OF_GUESSES) {
+                    newMessage = player[currentPlayer].getName() + 
+                                    ": Out of guesses. Click Enter to Continue.";
+                } else { // next guess
+                    newMessage = player[currentPlayer].getName() +
+                                    ": Guess the Wordle.";
+                    currentGuess++;
+                }
+            // Not 5 Letter Word
+            } else if (input.length() != NUMBER_OF_LETTERS) {
+                newMessage = player[currentPlayer].getName() +
+                                    ": Must be a 5 letter word, try again.";
+            // Not a Word
+            } else {
+                newMessage = player[currentPlayer].getName() + ": Not a word, try again.";
+            }  
         // Continue Game
         } else if (oldMessage.indexOf("continue") > 0) {
             // Game Over
@@ -126,7 +129,8 @@ public class WordleGame {
                     newMessage = "Game Over. " + player[1].getName() + " WINS!";
                 }
             // Next Round
-            } else if (currentGuess == NUMBER_OF_GUESSES && currentPlayer == (NUMBER_OF_PLAYERS - 1)) {
+            } else if (currentGuess == NUMBER_OF_GUESSES &&
+                            currentPlayer == (NUMBER_OF_PLAYERS - 1)) {
                 currentGuess = 1;
                 currentPlayer = 0;
                 currentRound++;
