@@ -26,7 +26,8 @@ public class Wordle {
     private String[] guessList;
     
     /**
-     * Reads the .txt files to create arrays of words
+     * Reads the .txt files to create arrays of words. If in test mode, TestList.txt will 
+     * be read as list of target words, otherwise WordleList.txt is read.
      * @param test Indicates if program is in test mode, -1 if the program is in test mode
      */
     public Wordle(int test) {
@@ -47,8 +48,10 @@ public class Wordle {
     }
     
     /**
-     * Randomly assigns a target word for a Wordle game.
+     * Randomly assigns a target word for a Wordle game if not in test mode.
      * If game is in test mode, pull sequentially from the test words array.
+     * @throws IllegalArgumentException if the program is in test mode 
+     * and index value exceeds the array length
      */
     public void newAnswer() {
         int oldAnswerIndex;
@@ -64,7 +67,12 @@ public class Wordle {
                 for(int i = 0; i < wordleList.length; i++) {
                     if (wordleList[i].equals(oldWordle)) {
                         oldAnswerIndex = i;
-                        wordle = wordleList[oldAnswerIndex + 1];
+                        if ((oldAnswerIndex + 1) > wordleList.length) {
+                            throw new IllegalArgumentException("Test words array length exceeded");
+                        }
+                        else {
+                            wordle = wordleList[oldAnswerIndex + 1];
+                        }
                     }
                 }
             }
