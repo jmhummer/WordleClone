@@ -1,7 +1,4 @@
 import java.util.*;
-//TODO Remove this note: 
-//To compile: javac -d bin -cp bin src/Player.java
-//To run: java -cp bin Player
 
 /**
  * Maintains player statistics and information
@@ -46,14 +43,19 @@ public class Player {
         return score;
     }
     
+    /**
+     * Returns the player object
+     * @return this The player object
+     */
     public Player getPlayer() {
         return this;
     }
 
     /**
-     * Adds the appropriate amount of points to the player's score depending on the amount of guesses
+     * Adds the appropriate amount of points to the player's score depending on
+     * the amount of guesses
      * @param currentGuess The amount of guesses the player has in a round
-     * @throw IllegalArgumentException if the number of guesses is lower than 1 or less than 6
+     * @throws IllegalArgumentException if the number of guesses is lower than 1 or less than 6
      */
     public void addScore(int currentGuess) {
         if (currentGuess > MAXIMUM_GUESSES || currentGuess < MINIMUM_GUESSES) {

@@ -1,8 +1,5 @@
 import java.util.*;
 import java.io.*;
-//TODO Remove this note: 
-//To compile: javac -d bin -cp bin src/Wordle.java
-//To run: java -cp bin Wordle
 
 /**
  * Runs the main Wordle program, determines if a guess is the target word
@@ -31,11 +28,8 @@ public class Wordle {
     /**
      * Reads the .txt files to create arrays of words
      * @param test Indicates if program is in test mode, -1 if the program is in test mode
-     *
      */
     public Wordle(int test) {
-        //TODO create file reader for GuessList.txt, WordleList.txt, and TestList.txt
-        //Note: Look at Github .txt files when making file scanner, they are separated by line, not comma
         this.test = test;
         String wordleFile;
         String guessFile = "words/GuessList.txt";
@@ -97,26 +91,7 @@ public class Wordle {
     public String getAnswer() {
         return wordle;
     }
-    
-    
-    /**
-     * Compares the user's guess against the wordle (target word)
-     * First, determines if the guess is a valid guessable word
-     * Then, checks to see which letters are in the correct position,
-     * in the word in the wrong position, or are not in the word
-     * Returns true only if the guess is exactly correct
-     *
-     * @param guess the word that was guessed by the user
-     * @return true if the word exactly matches the wordle
-     */
-    /* This may not be the best way to handle this, depending on what logic
-       is used in the WordleGame object
-    public boolean compareWordle(String guess) {
-        
-    }
-    */
-    
-    
+       
     /**
      * Searches array of possible words and indicates if a guess is a word
      * @param guess The input value to compare to the list of possible words
