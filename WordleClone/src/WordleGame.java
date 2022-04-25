@@ -13,7 +13,7 @@ public class WordleGame {
     public static final int NUMBER_OF_PLAYERS = 2;
     
     /** Number of rounds in game */
-    public static final int NUMBER_OF_ROUNDS = 5;
+    public static final int NUMBER_OF_ROUNDS = 1;
     
     /** Number of guesses per player in a round */
     public static final int NUMBER_OF_GUESSES = 6;
@@ -44,6 +44,7 @@ public class WordleGame {
      * @param testFlag int random seed for testing
      */
     public WordleGame(int testFlag) {
+        
         // construct wordle
         wordle = new Wordle(testFlag);
         // get first answer
@@ -54,6 +55,7 @@ public class WordleGame {
         for(int i = 0; i < player.length; i++) {
             player[i] = new Player();
         }
+
         // construct board
         board = new Board(NUMBER_OF_GUESSES, NUMBER_OF_LETTERS, wordle.getAnswer());
         
@@ -75,7 +77,9 @@ public class WordleGame {
         oldMessage = oldMessage.toLowerCase();
         
         // Input Player names
-        if (oldMessage.indexOf("name") > 0) {
+        if((oldMessage.indexOf("wins") > 0) || (oldMessage.indexOf("tie")) > 0)
+            System.exit(1);
+        else if (oldMessage.indexOf("name") > 0) {
             if (currentPlayer < NUMBER_OF_PLAYERS) {
                 player[currentPlayer - 1].addName(name);
                 currentPlayer++;
@@ -122,11 +126,11 @@ public class WordleGame {
             if(currentGuess == NUMBER_OF_GUESSES && currentPlayer == (NUMBER_OF_PLAYERS - 1)
                             && currentRound == NUMBER_OF_ROUNDS) {
                 if (player[0].getScore() == player[1].getScore()) {
-                    newMessage = "Game Over. It is a TIE!";
+                    newMessage = "Game Over. It is a TIE! Press ENTER to exit.";
                 } else if (player[0].getScore() > player[1].getScore()) {
-                    newMessage = "Game Over. " + player[0].getName() + " WINS!";
+                    newMessage = "Game Over. " + player[0].getName() + " WINS! Press ENTER to exit.";
                 } else {
-                    newMessage = "Game Over. " + player[1].getName() + " WINS!";
+                    newMessage = "Game Over. " + player[1].getName() + " WINS! Press ENTER to exit.";
                 }
             // Next Round
             } else if (currentGuess == NUMBER_OF_GUESSES &&
