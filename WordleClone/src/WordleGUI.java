@@ -7,6 +7,8 @@ import java.awt.event.*;
 import java.time.chrono.ThaiBuddhistChronology;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.jar.JarEntry;
+
 import javax.swing.border.Border;
 
 /**
@@ -30,13 +32,13 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
     public static final int X = 400;
 
     /** y coordinate of upper lefthand corner of GUI */
-    public static final int Y = 50;
+    public static final int Y = 25;
 
     /** Pixel width of original game window */
     public static final int WINDOW_WIDTH = 396;
 
     /** Pixel height of original game window */
-    public static final int WINDOW_HEIGHT = 595;
+    public static final int WINDOW_HEIGHT = 650;
     
     /** Font size of text */
     public static final int FONT_SIZE = 15;
@@ -44,10 +46,21 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
     /** Font size for guess letters */
     public static final int GUESS_FONT_SIZE = 22;
 
+    /** Font size for alphabet */
+    public static final int ALPHABET_FONT_SIZE = 15;
+
     /** Width of text */
     public static final int TEXT_WIDTH = 10;
 
+    /** Alphabet letters per row */
+    public static final int ALPHABET_LETTERS_PER_ROW = 9;
+
+    /** Rows of alphabet letters */
+    public static final int ROWS_OF_ALPHABET_LETTERS = 3;
+
     public static final int BORDER_WIDTH = 2;
+
+    public static final int ALPHABET_BORDER_WIDTH = 1;
 
     public static final int NUM_OF_GUESSES = 6;
     
@@ -55,8 +68,10 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
 
     public static final int NUM_OF_PLAYERS = 2;
 
-    private JLabel playerLabel[], roundLabel, messageLabel, letterLabel[][], directionsLabel;
-    private JPanel mainPanel, panelOne, panelTwo, guessPanel[], bottomPanel;
+    public static final int NUM_LETTERS_IN_ALPHABET = 26;
+
+    private JLabel playerLabel[], roundLabel, messageLabel, letterLabel[][], directionsLabel, alphabetLabel[][];
+    private JPanel mainPanel, panelOne, panelTwo, guessPanel[], bottomPanel, alphabetRowPanel, combinedAlphabetPanel;
     private JTextField guessTextField;
 
     /** Buttons */
@@ -75,15 +90,12 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
         letterLabel = new JLabel[NUM_OF_GUESSES][NUM_OF_LETTERS];
         playerLabel = new JLabel[NUM_OF_PLAYERS];
         guessPanel = new JPanel[NUM_OF_GUESSES];
-        player = new Player[2];
+        player = new Player[NUM_OF_PLAYERS];
 
         message = "Input Player 1's name and click ENTER.";
-        player = new Player[NUM_OF_PLAYERS];
-        playerLabel = new JLabel[NUM_OF_PLAYERS];
         for(int i = 0; i < player.length; i++) {
             player[i] = new Player();
         }
-        playerLabel[0] = new JLabel();
 
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int width = WINDOW_WIDTH;
@@ -153,7 +165,7 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
         panelTwo.setBorder(BorderFactory.createLineBorder(Color.black));
 
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(9, 1));
+        mainPanel.setLayout(new GridLayout(10, 1));
         mainPanel.add(panelOne);
         mainPanel.add(panelTwo);
 
@@ -227,6 +239,41 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
         bottomPanel.add(enterButton);
 
         mainPanel.add(bottomPanel);
+
+        combinedAlphabetPanel = new JPanel();
+        combinedAlphabetPanel.setLayout(new GridLayout(3,1));
+        alphabetLabel = new JLabel[ROWS_OF_ALPHABET_LETTERS][ALPHABET_LETTERS_PER_ROW];
+        char alphabetLetter = 'A';
+    
+        for(int row = 0; row < ROWS_OF_ALPHABET_LETTERS; row++) {
+            
+            alphabetRowPanel = new JPanel();
+            alphabetRowPanel.setLayout(new GridLayout(1, ALPHABET_LETTERS_PER_ROW));
+
+            for(int column = 0; column < ALPHABET_LETTERS_PER_ROW; column++) {
+                alphabetLabel[row][column] = new JLabel();
+                alphabetLabel[row][column].setFont(new Font("SansSerif",Font.BOLD,ALPHABET_FONT_SIZE));
+                alphabetLabel[row][column].setHorizontalAlignment(JLabel.CENTER);
+                alphabetLabel[row][column].setOpaque(true);
+                if(row == 0 && column == 0) {
+                    alphabetLabel[row][column].setText("");
+                    alphabetLabel[row][column].setBackground(Color.BLACK);
+                }
+                else {
+                    alphabetLabel[row][column].setText("" + alphabetLetter);
+                    alphabetLabel[row][column].setBackground(Color.DARK_GRAY);
+                    alphabetLetter++;
+                }
+                alphabetLabel[row][column].setForeground(Color.WHITE);
+                border = BorderFactory.createLineBorder(Color.BLACK, ALPHABET_BORDER_WIDTH);
+                alphabetLabel[row][column].setBorder(border); 
+                alphabetRowPanel.add(alphabetLabel[row][column]);
+                alphabetRowPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+            }
+            combinedAlphabetPanel.add(alphabetRowPanel);
+        }
+
+        mainPanel.add(combinedAlphabetPanel);
         
         c.add(mainPanel);
         setVisible(true);
@@ -306,6 +353,34 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
                 }
             }
         }
+
+        String alphabetColors[] = new String[NUM_LETTERS_IN_ALPHABET];
+        alphabetColors = board.getAlphabetColorsArray();
+        int colorIndex = 0;
+        for(int row = 0; row < ROWS_OF_ALPHABET_LETTERS; row++) {
+            for(int column = 0; column < ALPHABET_LETTERS_PER_ROW; column++) {
+                if(!((row == 0) && (column == 0))) {
+                    switch (alphabetColors[colorIndex]) {
+                        case "black":
+                            alphabetLabel[row][column].setBackground(Color.BLACK);
+                            break;
+                    
+                        case "blue":
+                            alphabetLabel[row][column].setBackground(Color.BLUE);
+                            break;
+
+                        case "orange":
+                            alphabetLabel[row][column].setBackground(Color.ORANGE);
+                            break;
+
+                        default:
+                            alphabetLabel[row][column].setBackground(Color.DARK_GRAY);
+                            break;
+                    }
+                    colorIndex++;
+                }
+            }
+        }
     }
     
     /**
@@ -334,7 +409,7 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
 
     /**
      * Starts up Wordle game
-     * @param args args[0] optional testFlag used for testing
+     * @param args args[0] -1 optional testFlag used for testing
      */
     public static void main(String[] args) {
 
@@ -351,10 +426,3 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
         }
     }
 }
-
-//TODO: make panel array
-//assign letters to panel
-//make getColorsArray
-//figure out colors
-//Figure out a way to just update the current guess
-//combine player[i] initialization into a for loop
