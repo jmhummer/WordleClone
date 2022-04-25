@@ -227,18 +227,39 @@ public class Board {
         return boardString;
     }
 
+    /** Returns the number of guesses so far \
+     * @return currentGuesses
+     */
     public int getCurrentGuess() {
         return currentGuesses;
     }
 
+    /** 
+     * Returns the 2D array of all guesses converted to char 
+     * @return letters
+     */
     public char[][] getGuessLettersArray() {
         return letters;
     }
 
+    /** 
+     * Returns the 2D array of the background colors of current guesses
+     * Sets each letter's color to orange if it is in the correct position
+     * Otherwise, sets each letter's color to blue if it is in the word and incorrect position
+     * Otherwise, keeps the letter's color to the default initialization of black
+     * @return colors
+     */
     public String[][] getGuessColorsArray() {
         return colors;
     }
 
+    /**
+     * Returns the array of background colors of the alphabet of letters
+     * Sets each letter's color to orange if it is in the correct position
+     * Otherwise, sets each letter's color to blue if it is in the word and incorrect position
+     * Otherwise, keeps the letter's color to the black if it isn't in the word at all
+     * @return alphabetColors
+     */
     public String[] getAlphabetColorsArray() {
         return alphabetColors;
     }
