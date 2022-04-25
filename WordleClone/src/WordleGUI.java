@@ -11,7 +11,7 @@ import javax.swing.border.Border;
  * @author Ben Morris
  */
 public class WordleGUI extends JFrame implements ActionListener, KeyListener 
-{
+{   
     /** WordleGame object */
     private WordleGame wg;
 
@@ -24,10 +24,10 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
     /** String to update message for the Board */
     private String message;
 
-    /** x coordinate of upper lefthand corner of GUI */
+    /** x-coordinate of upper lefthand corner of GUI */
     public static final int X = 400;
 
-    /** y coordinate of upper lefthand corner of GUI */
+    /** y-coordinate of upper lefthand corner of GUI */
     public static final int Y = 25;
 
     /** Pixel width of original game window */
@@ -212,7 +212,7 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
         border = BorderFactory.createLineBorder(Color.BLACK, BORDER_WIDTH);
         roundLabel.setBorder(border);
 
-        messageLabel = new JLabel(this.message);
+        messageLabel = new JLabel(message);
         messageLabel.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
         messageLabel.setHorizontalAlignment(JLabel.CENTER);
         messageLabel.setOpaque(true);
@@ -358,14 +358,14 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
         enterButton.addActionListener(this);     
 
         // Beginning message
-        this.message = "Press ENTER to continue.";     
+        message = "Press ENTER to continue.";     
     }
 
     /** Updates the fields of the GUI */
     public void updateGUI() {
 
         String input = null;
-        this.message = null;
+        message = null;
         
         input = guessTextField.getText();
         message = messageLabel.getText();
@@ -396,6 +396,7 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
 
         // Get the current guess number
         int guessNumber = wg.getCurrentGuess();
+
         // Necessary to make the logic work to have the correct message display
         int guessIndex = -1;
         
@@ -410,9 +411,11 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
 
         // Get updated Board
         board = wg.getBoard();
+
         // Create arrays to update the guess letters and colors
         char[][] guessLettersArray = board.getGuessLettersArray();
         String[][] guessColorsArray = board.getGuessColorsArray();
+
         // Update guess letters and colors to the labels
         for(int guess = 0; guess < NUM_OF_GUESSES; guess++) {
             for(int letter = 0; letter < NUM_OF_LETTERS; letter++) {
@@ -438,10 +441,13 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
 
         // Create array to store alphabet background colors
         String alphabetColors[] = new String[NUM_LETTERS_IN_ALPHABET];
+
         // Get the alphabet background colors
         alphabetColors = board.getAlphabetColorsArray();
+
         // Initialze the index for the color array
         int colorIndex = 0;
+
         // Update the backgrounds of the alphabet
         for(int row = 0; row < ROWS_OF_ALPHABET_LETTERS; row++) {
             for(int column = 0; column < ALPHABET_LETTERS_PER_ROW; column++) {

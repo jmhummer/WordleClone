@@ -13,7 +13,7 @@ public class WordleGame {
     public static final int NUMBER_OF_PLAYERS = 2;
     
     /** Number of rounds in game */
-    public static final int NUMBER_OF_ROUNDS = 1;
+    public static final int NUMBER_OF_ROUNDS = 5;
     
     /** Number of guesses per player in a round */
     public static final int NUMBER_OF_GUESSES = 6;
