@@ -97,7 +97,7 @@ public class WordleGame {
             if (wordle.isAnswer(input)) {
                 board.addGuess(input);
                 newMessage = player[currentPlayer].getName() + 
-                                    ": Correct! Click Enter to Continue.";
+                                    ": Correct! Click ENTER to Continue.";
                 player[currentPlayer].addScore(currentGuess);
                 currentGuess = NUMBER_OF_GUESSES;
             // Taken Guess
@@ -106,7 +106,7 @@ public class WordleGame {
                 // out of guesses
                 if (currentGuess == NUMBER_OF_GUESSES) {
                     newMessage = player[currentPlayer].getName() + 
-                                    ": Out of guesses. Click Enter to Continue.";
+                                    ": Out of guesses. Click ENTER to Continue.";
                 } else { // next guess
                     newMessage = player[currentPlayer].getName() +
                                     ": Guess the Wordle.";
