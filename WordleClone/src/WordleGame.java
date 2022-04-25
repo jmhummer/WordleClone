@@ -13,7 +13,7 @@ public class WordleGame {
     public static final int NUMBER_OF_PLAYERS = 2;
     
     /** Number of rounds in game */
-    public static final int NUMBER_OF_ROUNDS = 5;
+    public static final int NUMBER_OF_ROUNDS = 1;
     
     /** Number of guesses per player in a round */
     public static final int NUMBER_OF_GUESSES = 6;
@@ -131,9 +131,11 @@ public class WordleGame {
                 if (player[0].getScore() == player[1].getScore()) {
                     newMessage = "Game Over. It is a TIE! Press ENTER to exit.";
                 } else if (player[0].getScore() > player[1].getScore()) {
-                    newMessage = "Game Over. " + player[0].getName() + " WINS! Press ENTER to exit.";
+                    newMessage = "Game Over. " + player[0].getName() + 
+                                 " WINS! Press ENTER to exit.";
                 } else {
-                    newMessage = "Game Over. " + player[1].getName() + " WINS! Press ENTER to exit.";
+                    newMessage = "Game Over. " + player[1].getName() + 
+                                 " WINS! Press ENTER to exit.";
                 }
             // Next Round
             } else if (currentGuess == NUMBER_OF_GUESSES &&

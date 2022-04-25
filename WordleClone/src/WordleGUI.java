@@ -1,14 +1,6 @@
-// javac -d bin -cp bin src/WordleGUI.java
-// java -cp bin WordleGUI
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.time.chrono.ThaiBuddhistChronology;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.jar.JarEntry;
-
 import javax.swing.border.Border;
 
 /**
@@ -129,31 +121,33 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
     private JButton quitButton;
 
     /**
-     * Creates instance of WordleGUI class. This class creates and initializes the fields of the GUI.
+     * Creates instance of WordleGUI class. This class creates and 
+     * initializes the fields of the GUI.
      * 
-     * @param testFlag if -1, a game using the test words is played, otherwise the a game with random
-     * words from the main file will be played
+     * @param testFlag if -1, a game using the test words is played, 
+     *                 otherwise the a game with random words from the main file will be played
      */
     public WordleGUI(int testFlag) {
         
-        //Create a new WordleGame
+        // Create a new WordleGame
         wg = new WordleGame(testFlag);
-        //Creat a Board
+
+        // Create a Board
         board = wg.getBoard();
 
-        //Initialize 2d Label array storing the guesses by letter
+        // Initialize 2d Label array storing the guesses by letter
         letterLabel = new JLabel[NUM_OF_GUESSES][NUM_OF_LETTERS];
 
-        //Initialize the label array of player names
+        // Initialize the label array of player names
         playerLabel = new JLabel[NUM_OF_PLAYERS];
 
-        //Initialize the panel array for the guesses
+        // Initialize the panel array for the guesses
         guessPanel = new JPanel[NUM_OF_GUESSES];
 
-        //Initialize the array to store player names
+        // Initialize the array to store player names
         player = new Player[NUM_OF_PLAYERS];
 
-        //Initialize message create Player array
+        // Initialize message create Player array
         message = "Input Player 1's name and click ENTER.";
         for(int i = 0; i < player.length; i++) {
             player[i] = new Player();
@@ -164,7 +158,7 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
         
         // Set window dimensions and other details
         int width = WINDOW_WIDTH;
-		int height = WINDOW_HEIGHT;
+        int height = WINDOW_HEIGHT;
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(width, height);
         setLocation(X, Y);
@@ -240,13 +234,13 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
         mainPanel.add(panelTwo);
 
         // Get board initialization
-        Board board = wg.getBoard();
+        board = wg.getBoard();
         
         // Create guess labels and panel
         for(int guess = 0; guess < NUM_OF_GUESSES; guess++) {           
             
             guessPanel[guess] = new JPanel();
-            guessPanel[guess].setLayout(new GridLayout(1, 5));
+            guessPanel[guess].setLayout(new GridLayout(1, NUM_OF_LETTERS));
             
             for(int letter = 0; letter < NUM_OF_LETTERS; letter++) {                         
                 letterLabel[guess][letter] = new JLabel();
@@ -278,7 +272,7 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
         border = BorderFactory.createLineBorder(Color.BLACK, BORDER_WIDTH);
         directionsLabel.setBorder(border);
 
-        guessTextField = new JTextField(5);
+        guessTextField = new JTextField(NUM_OF_LETTERS);
         guessTextField.setText("");
         guessTextField.setFont(new Font("SansSerif",Font.BOLD,FONT_SIZE));
         guessTextField.setHorizontalAlignment(JTextField.CENTER);
@@ -329,7 +323,8 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
 
             for(int column = 0; column < ALPHABET_LETTERS_PER_ROW; column++) {
                 alphabetLabel[row][column] = new JLabel();
-                alphabetLabel[row][column].setFont(new Font("SansSerif",Font.BOLD,ALPHABET_FONT_SIZE));
+                alphabetLabel[row][column].setFont(new Font("SansSerif",
+                                           Font.BOLD,ALPHABET_FONT_SIZE));
                 alphabetLabel[row][column].setHorizontalAlignment(JLabel.CENTER);
                 alphabetLabel[row][column].setOpaque(true);
                 if(row == 0 && column == 0) {
@@ -388,6 +383,7 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
         String[] name = new String[NUM_OF_PLAYERS];
         int[] score = new int[NUM_OF_PLAYERS];
 
+        // Get player names and scores
         for(int i = 0; i < NUM_OF_PLAYERS; i++) {
             player = wg.getPlayer();
             name[i] = player[i].getName();
@@ -398,21 +394,26 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
             playerLabel[i].setText(name[i] + ": " + score[i] + " points");
         }
 
+        // Get the current guess number
         int guessNumber = wg.getCurrentGuess();
+        // Necessary to make the logic work to have the correct message display
         int guessIndex = -1;
         
         //adjusting the guessIndex versus the current wg.currentGuess
         if(guessNumber == 1 && round == 1)
             directionsLabel.setText("Enter your guess:");
-
         if(guessNumber > 1)
             guessIndex = guessNumber - 2;
 
+        // Set round number
         roundLabel.setText("Round " + round + " of 5");                
 
+        // Get updated Board
         board = wg.getBoard();
+        // Create arrays to update the guess letters and colors
         char[][] guessLettersArray = board.getGuessLettersArray();
         String[][] guessColorsArray = board.getGuessColorsArray();
+        // Update guess letters and colors to the labels
         for(int guess = 0; guess < NUM_OF_GUESSES; guess++) {
             for(int letter = 0; letter < NUM_OF_LETTERS; letter++) {
                 letterLabel[guess][letter].setText("" + guessLettersArray[guess][letter]);
@@ -435,9 +436,13 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
             }
         }
 
+        // Create array to store alphabet background colors
         String alphabetColors[] = new String[NUM_LETTERS_IN_ALPHABET];
+        // Get the alphabet background colors
         alphabetColors = board.getAlphabetColorsArray();
+        // Initialze the index for the color array
         int colorIndex = 0;
+        // Update the backgrounds of the alphabet
         for(int row = 0; row < ROWS_OF_ALPHABET_LETTERS; row++) {
             for(int column = 0; column < ALPHABET_LETTERS_PER_ROW; column++) {
                 if(!((row == 0) && (column == 0))) {
@@ -465,8 +470,8 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
     }
     
     /**
-     * Executes action based on event
-     * @param e event (button press, etc.)
+     * Updates the GUI if GUI ENTER button is pressed or quits if GUI QUIT button is pressed
+     * @param e Buttons clicked (QUIT or ENTER)
      */
     public void actionPerformed(ActionEvent e) {
         
@@ -477,16 +482,25 @@ public class WordleGUI extends JFrame implements ActionListener, KeyListener
         }
     }
     
+    /**
+     * Updates the GUI if the ENTER key is pressed
+     * @param e Key pressed in the text block
+     */
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode()==KeyEvent.VK_ENTER){
-          updateGUI();
+        if (e.getKeyCode() == KeyEvent.VK_ENTER){
+            updateGUI();
         }
     }
 
+    // Overriding the base class methods to make the keyPressed event work
     @Override
-    public void keyReleased(KeyEvent arg) {}
+    public void keyReleased(KeyEvent arg) {
+    }
+
+    // Overriding the base class methods to make the keyPressed event work
     @Override
-    public void keyTyped(KeyEvent arg) {}
+    public void keyTyped(KeyEvent arg) {
+    }
 
     /**
      * Starts up Wordle game
