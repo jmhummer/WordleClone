@@ -76,6 +76,9 @@ public class WordleGame {
         input = input.toLowerCase();
         oldMessage = oldMessage.toLowerCase();
         
+        // Exit if game is over
+        if((oldMessage.indexOf("wins") > 0) || (oldMessage.indexOf("tie")) > 0)
+            System.exit(1);
         // Input Player names
         if((oldMessage.indexOf("wins") > 0) || (oldMessage.indexOf("tie")) > 0)
             System.exit(1);
