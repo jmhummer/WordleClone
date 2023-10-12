@@ -15,7 +15,7 @@ This is a competitive version of the popular Wordle daily challenge where a play
 ● Blue indicates the letter is in the word but in the wrong spot.\
 ● Gray indicates the letter is not in the word in any spot.\
 ● Letters guessed will be indicated by dark gray letter keys.\
-● Letters not yet guessed will be indicated by light gray letter keys.\
+● Letters not yet guessed will be indicated by light gray letter keys.
 
 If the player correctly guesses the Wordle, they get the associated points below based on the number of
 guesses needed. Zero points are awarded if the player is unable to guess the word in six tries. The cumulative
@@ -29,9 +29,9 @@ score will be computed after each round for each player. The player at the end w
 7. No correct guesses: 0 pts
 
 <picture>
- <source media="(prefers-color-scheme: dark)" srcset="WordleClone/lib/media">
- <source media="(prefers-color-scheme: light)" srcset="WordleClone/lib/media">
- <img alt="A Wordle game partially played with round one completed in 3 guesses, player one receives 30 points" src="WordleClone/lib/media">
+ <source media="(prefers-color-scheme: dark)" srcset="https://github.com/jmhummer/WordleClone/lib/media/example_photo.png">
+ <source media="(prefers-color-scheme: light)" srcset="https://github.com/jmhummer/WordleClone/lib/media/example_photo.png">
+ <img alt="A Wordle game partially played with round one completed in 4 guesses, player one receives 30 points" src="https://github.com/jmhummer/WordleClone/lib/media/example_photo.png">
 </picture>
 
 ## How to Install and Run:
