@@ -29,9 +29,9 @@ score will be computed after each round for each player. The player at the end w
 7. No correct guesses: 0 pts
 
 <picture>
- <source media="(prefers-color-scheme: dark)" srcset="https://github.com/jmhummer/WordleClone/lib/media/example_photo.png">
- <source media="(prefers-color-scheme: light)" srcset="https://github.com/jmhummer/WordleClone/lib/media/example_photo.png">
- <img alt="A Wordle game partially played with round one completed in 4 guesses, player one receives 30 points" src="https://github.com/jmhummer/WordleClone/lib/media/example_photo.png">
+ <source media="(prefers-color-scheme: dark)" srcset="https://github.com/jmhummer/WordleClone/blob/main/WordleClone/media/example_photo.png">
+ <source media="(prefers-color-scheme: light)" srcset="https://github.com/jmhummer/WordleClone/blob/main/WordleClone/media/example_photo.png">
+ <img alt="A Wordle game partially played with round one completed in 4 guesses, player one receives 30 points" src="https://github.com/jmhummer/WordleClone/blob/main/WordleClone/media/example_photo.png">
 </picture>
 
 ## How to Install and Run:
