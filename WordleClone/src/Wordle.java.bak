@@ -13,6 +13,9 @@ public class Wordle {
     /** Indicates if program is in test mode or standard mode */
     private int test;
     
+    /** Index of wordleList array from which to pull the target word */
+    private int index;
+    
     /** Target word for user to guess */
     private String wordle;
     
@@ -74,6 +77,7 @@ public class Wordle {
                 }
             }
         }
+    }
         //If not in test mode, randomly pull from the array of guesses, assign new answer,
         //and replace with null value. If null value is pulled, pull the next word in line.
         else {
@@ -202,4 +206,6 @@ public class Wordle {
         }
         input.close();
     }
+ 
+    
 }
