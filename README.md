@@ -36,8 +36,8 @@ score will be computed after each round for each player. The player at the end w
 
 ## How to Install and Run:
 1. Download all files provided
-2. Compile all files in src folder, creating .class files (preferrably in a separate bin folder) using the "javac *.java" command in your preferred shell
-3. Run the WordleGUI.class file using the "java WordleGUI" command 
+2. Compile all files in src folder, creating .class files (preferrably in a separate bin folder you've created) using the "javac -d bin/*.java" command in your preferred shell. Use this command from the WordleClone/ top level of the repository.
+3. Run the WordleGUI.class file using the "java -cp bin WordleGUI" command 
 4. Enter Player 1's name
 5. Enter Player 2's name
 6. Begin playing, Player 1 starts first
